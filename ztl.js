@@ -132,7 +132,7 @@ function loadData(xml) {
         var sTime = row.getElementsByTagName("ORA_INIZIO");
         var eTime = row.getElementsByTagName("ORA_FINE");
         //Trasformazione dell'object htmlcolection in stringa
-        for(j= 0; j < polygon[0].childNodes.length; j++) {
+        for(var j= 0; j < polygon[0].childNodes.length; j++) {
           string[i] += polygon[0].childNodes[j].nodeValue;
         }
         schedule[i][0] = sTime[0].childNodes[0].nodeValue;
@@ -149,7 +149,7 @@ function loadData(xml) {
     // Cancellazione degli elementi che non contengono un sottopoligono
     for(i = 0; i < split.length; i++){
         for(j = 0; j < split[i].length; j++) {
-            if(split[i][j] == "POLYGON " || split[i][j] == "," || split[i][j] == ")") {
+            if(split[i][j] === "POLYGON " || split[i][j] === "," || split[i][j] === ")") {
                split[i].splice(j, 1);
             }
         }
@@ -161,7 +161,7 @@ function loadData(xml) {
         schedule[i][2] = split[i].length;
         for(var k = 0; k < split[i].length; k++) {
             //Per ogni poligono si effettua l'estrazione delle coordinate
-            polygonPoints = wktParser(split[i][k]);
+            var polygonPoints = wktParser(split[i][k]);
             coordinates[cont] = new Array(polygonPoints.length / 2);
             j = 0;
             for(var r = 0; r < (polygonPoints.length / 2); r++) {
@@ -191,7 +191,7 @@ function splitString(polygon) {
 * @return {string} string - array di string contenenti le coordinate
 */
 function wktParser(polygon) {
- string = polygon.match(/(\d*\.)?\d+/g);
+ var string = polygon.match(/(\d*\.)?\d+/g);
  return string;
 }
 
