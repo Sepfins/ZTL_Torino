@@ -29,7 +29,7 @@ function init(){
   var color = [];
 
   var currentDate = new Date();
-  currentTime = currentDate.getHours() * 60 + currentDate.getMinutes();
+  var currentTime = currentDate.getHours() * 60 + currentDate.getMinutes();
 
   // Se la ZTL è chiusa, si colora di rosso
   for(var i = 0; i < schedule.length; i++) {
@@ -45,14 +45,14 @@ function init(){
 
   var polyColors = [];
   var c = 0;
-  for(var i = 0; i < schedule.length; i++) {
+  for(i = 0; i < schedule.length; i++) {
     for(var j = 0; j < schedule[i][2]; j++) {
       polyColors[c] = color[i];
       c++;
     }
   }
 
-  for(var i = 0; i < coordinates.length; i++) {
+  for(i = 0; i < coordinates.length; i++) {
     points[i] = getPoints(coordinates[i]);
     polygonOptions[i] = {
                            path: points[i],
@@ -87,18 +87,18 @@ function coordinateConversion(x, y) {
 
   x -= x0;
 
-  N = y / conv_rate;
-  Nr = N * rad;
+  var N = y / conv_rate;
+  var Nr = N * rad;
 
-  A = N + a1 * Math.sin(2 * Nr) + a2 *Math.sin(4 * Nr)+ a3 * Math.sin(6 * Nr);
+  var A = N + a1 * Math.sin(2 * Nr) + a2 *Math.sin(4 * Nr)+ a3 * Math.sin(6 * Nr);
   A *= rad;
 
-  v = Math.sqrt(1 + 0.0067681702 * Math.pow(Math.cos(A), 2));
+  var v = Math.sqrt(1 + 0.0067681702 * Math.pow(Math.cos(A), 2));
 
-  B = Math.atan( (v * Math.sinh(x / 6397376.633) ) / Math.cos(A) );
+  var B = Math.atan( (v * Math.sinh(x / 6397376.633) ) / Math.cos(A) );
 
-  Lat = (Math.atan(Math.tan(A) * Math.cos(v * B))) / rad;
-  Lon = B/rad + lambda;
+  var Lat = (Math.atan(Math.tan(A) * Math.cos(v * B))) / rad;
+  var Lon = B/rad + lambda;
 
   return[Lat, Lon];
 }
@@ -106,7 +106,7 @@ function coordinateConversion(x, y) {
 //Apertura file XML
 var xhttp = new XMLHttpRequest();
 xhttp.onreadystatechange = function() {
-    if (xhttp.readyState == 4 && xhttp.status == 200) {
+    if (xhttp.readyState === 4 && xhttp.status === 200) {
       loadData(xhttp);
     }
 };
@@ -124,7 +124,7 @@ function loadData(xml) {
 
     var string = ["", "", ""]; //Stringa con i dati su un WKT_GEOM
 
-    for(var i = 0; i < rows.length; i++) {
+    for(i = 0; i < rows.length; i++) {
         schedule[i] = new Array(3);
 
         var row = rows[i];
@@ -132,7 +132,7 @@ function loadData(xml) {
         var sTime = row.getElementsByTagName("ORA_INIZIO");
         var eTime = row.getElementsByTagName("ORA_FINE");
         //Trasformazione dell'object htmlcolection in stringa
-        for(var j= 0; j < polygon[0].childNodes.length; j++) {
+        for(j= 0; j < polygon[0].childNodes.length; j++) {
           string[i] += polygon[0].childNodes[j].nodeValue;
         }
         schedule[i][0] = sTime[0].childNodes[0].nodeValue;
@@ -141,14 +141,14 @@ function loadData(xml) {
 
     // Split di ogni poligono
     var split = [];
-    for(var i = 0; i < string.length; i++) {
+    for(i = 0; i < string.length; i++) {
         split[i] = new Array(string[i].length);
         split[i] = splitString(string[i]);
     }
 
     // Cancellazione degli elementi che non contengono un sottopoligono
-    for(var i = 0; i < split.length; i++){
-        for(var j = 0; j < split[i].length; j++) {
+    for(i = 0; i < split.length; i++){
+        for(j = 0; j < split[i].length; j++) {
             if(split[i][j] == "POLYGON " || split[i][j] == "," || split[i][j] == ")") {
                split[i].splice(j, 1);
             }
@@ -157,13 +157,13 @@ function loadData(xml) {
 
     var cont = 0;
     // Caricamento delle coordinate in array
-    for(var i = 0; i < split.length; i++) {
+    for(i = 0; i < split.length; i++) {
         schedule[i][2] = split[i].length;
         for(var k = 0; k < split[i].length; k++) {
             //Per ogni poligono si effettua l'estrazione delle coordinate
             polygonPoints = wktParser(split[i][k]);
             coordinates[cont] = new Array(polygonPoints.length / 2);
-            var j = 0;
+            j = 0;
             for(var r = 0; r < (polygonPoints.length / 2); r++) {
                 coordinates[cont][r] = new Array(2);
                 coordinates[cont][r][0] = coordinateConversion(polygonPoints[j], polygonPoints[j+1])[0] + xDev;
@@ -181,7 +181,7 @@ function loadData(xml) {
 * @return {string} string - array di stringhe contenenti i poligoni
 */
 function splitString(polygon) {
-   string = polygon.split(/\(([^)]+)\)/);
+   var string = polygon.split(/\(([^)]+)\)/);
    return string;
 }
 
@@ -202,7 +202,7 @@ function wktParser(polygon) {
 */
 function getPoints(coordinates) {
  var points = new google.maps.MVCArray();
- for(var i = 0; i < coordinates.length; i++) {
+ for(i = 0; i < coordinates.length; i++) {
     points.push (new google.maps.LatLng(coordinates[i][0], coordinates[i][1]));
  }
  return points;
